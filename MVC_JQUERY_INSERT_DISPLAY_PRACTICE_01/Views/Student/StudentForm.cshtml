@@ -38,6 +38,7 @@
         <th>Email</th>
         <th>Password</th>
         <th>Mobile</th>
+        <th>Actions</th>
     </tr>
 </table>
 
@@ -52,6 +53,7 @@
     #tbl th {
         background-color: blue;
         color: white;
+        text-align: center
     }
 
     #tbl th, #tbl td {
@@ -66,6 +68,7 @@
         SHOW();
     });
 
+    var id;
     // Clear Form
     function CLEAR_FORM() {
         $("#Name_txt").val('');
@@ -75,24 +78,47 @@
     }
 
     function SUBMIT() {
-        $.ajax({
-            url: 'Student/StudentInsert',
-            type: 'post',
-            data: {
-                A: $("#Name_txt").val(),
-                B: $("#Email_txt").val(),
-                C: $("#Pass_txt").val(),
-                D: $("#Mobile_txt").val()
-            },
-            success: function () {
-                alert("Submited Successfully!");
-                SHOW();
-                CLEAR_FORM();
-            },
-            error: function () {
-                alert("Something went wrong!");
-            }
-        });
+        if ($("#Submit_txt").val() == "Submit") {
+            $.ajax({
+                url: 'Student/StudentInsert',
+                type: 'post',
+                data: {
+                    A: $("#Name_txt").val(),
+                    B: $("#Email_txt").val(),
+                    C: $("#Pass_txt").val(),
+                    D: $("#Mobile_txt").val()
+                },
+                success: function () {
+                    alert("Submited Successfully!");
+                    SHOW();
+                    CLEAR_FORM();
+                },
+                error: function () {
+                    alert("Something went wrong!");
+                }
+            });
+        }
+        else if ($("#Submit_txt").val() == "Save Changes") {
+            $.ajax({
+                url: 'Student/StudentUpdate',
+                type: 'post',
+                data: {
+                    A: $("#Name_txt").val(),
+                    B: $("#Email_txt").val(),
+                    C: $("#Pass_txt").val(),
+                    D: $("#Mobile_txt").val(),
+                    E: id
+                },
+                success: function () {
+                    alert("Changes has been saved Successfully!");
+                    SHOW();
+                    CLEAR_FORM();
+                },
+                error: function () {
+                    alert("Something went wrong!");
+                }
+            });
+        }
     }
 
     function SHOW() {
@@ -104,7 +130,7 @@
                 data = JSON.parse(data);
                 $("#tbl").find("tr:gt(0)").remove();
                 for (var i = 0; i < data.length; i++) {
-                    $("#tbl").append('<tr><td>' + data[i].SID + '</td><td>' + data[i].NAME + '</td><td>' + data[i].EMAIL + '</td><td>' + data[i].PASS + '</td><td>' + data[i].MOBILE + '</td> <td><input id="Delete_btn" value="Delete" type="button" onclick="DELETE(' + data[i].SID + ')" /></td> </tr>')
+                    $("#tbl").append('<tr><td>' + data[i].SID + '</td><td>' + data[i].NAME + '</td><td>' + data[i].EMAIL + '</td><td>' + data[i].PASS + '</td><td>' + data[i].MOBILE + '</td> <td><span><input id="Delete_btn" value="Delete" type="button" onclick="DELETE(' + data[i].SID + ')" style="width:50%" /><input id="Edit_btn" value="Edit" type="button" onclick="POPULATE(' + data[i].SID + ')" style="width:50%" /></span></td> </tr>')
                 }
             },
             error: function () {
@@ -121,6 +147,26 @@
             success: function () {
                 alert("Deleted Successfully!");
                 SHOW();
+            },
+            error: function () {
+                alert("Something went wrong!");
+            }
+        });
+    }
+
+    function POPULATE(sid) {
+        $.ajax({
+            url: 'Student/GetSelectedStudentRecord',
+            type: 'post',
+            data: { sid },
+            success: function (data) {
+                data = JSON.parse(data);
+                id = data[0].SID;
+                $("#Name_txt").val(data[0].NAME);
+                $("#Email_txt").val(data[0].EMAIL);
+                $("#Pass_txt").val(data[0].PASS);
+                $("#Mobile_txt").val(data[0].MOBILE);
+                $("#Submit_txt").val("Save Changes")
             },
             error: function () {
                 alert("Something went wrong!");
