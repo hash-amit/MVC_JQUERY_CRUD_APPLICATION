@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "StudentForm";
+}
+
+<h2>StudentForm</h2>
+<table>
+    <tr>
+        <td>Name: </td>
+        <td><input id="Name_txt" type="text" /></td>
+    </tr>
+
+    <tr>
+        <td>Email: </td>
+        <td><input id="Email_txt" type="text" /></td>
+    </tr>
+
+    <tr>
+        <td>Password: </td>
+        <td><input id="Pass_txt" type="text" /></td>
+    </tr>
+
+    <tr>
+        <td>Mobile: </td>
+        <td><input id="Mobile_txt" type="text" /></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td><input id="Submit_txt" value="Submit" type="button" onclick="SUBMIT()" /></td>
+    </tr>
+</table>
+
+<table id="tbl">
+    <tr>
+        <th>SID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Mobile</th>
+    </tr>
+</table>
+
+<style>
+    /* styles.css */
+    #tbl {
+        border-collapse: collapse;
+        border: 1px solid black;
+        width: 800px;
+    }
+    
+    #tbl th {
+        background-color: blue;
+        color: white;
+    }
+
+    #tbl th, #tbl td {
+        border: 1px solid black;
+        /*padding: 8px;*/ /* Optional: Add padding to table cells for better spacing */
+    }
+</style>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        SHOW();
+    });
+
+    // Clear Form
+    function CLEAR_FORM() {
+        $("#Name_txt").val('');
+        $("#Email_txt").val('');
+        $("#Pass_txt").val('');
+        $("#Mobile_txt").val('');
+    }
+
+    function SUBMIT() {
+        $.ajax({
+            url: 'Student/StudentInsert',
+            type: 'post',
+            data: {
+                A: $("#Name_txt").val(),
+                B: $("#Email_txt").val(),
+                C: $("#Pass_txt").val(),
+                D: $("#Mobile_txt").val()
+            },
+            success: function () {
+                alert("Submited Successfully!");
+                SHOW();
+                CLEAR_FORM();
+            },
+            error: function () {
+                alert("Something went wrong!");
+            }
+        });
+    }
+
+    function SHOW() {
+        $.ajax({
+            url: 'Student/StudentShow',
+            type: 'post',
+            data: {},
+            success: function (data) {
+                data = JSON.parse(data);
+                $("#tbl").find("tr:gt(0)").remove();
+                for (var i = 0; i < data.length; i++) {
+                    $("#tbl").append('<tr><td>' + data[i].SID + '</td><td>' + data[i].NAME + '</td><td>' + data[i].EMAIL + '</td><td>' + data[i].PASS + '</td><td>' + data[i].MOBILE +'</td></tr>')
+                }
+            },
+            error: function () {
+                alert("Something went wrong!");
+            }
+        });
+    }
+</script>
