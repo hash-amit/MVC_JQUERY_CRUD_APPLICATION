@@ -3,7 +3,7 @@
     ViewBag.Title = "StudentForm";
 }
 
-<h2>StudentForm</h2>
+<h2>Student Registration Form</h2>
 <table>
     <tr>
         <td>Name: </td>
@@ -104,8 +104,23 @@
                 data = JSON.parse(data);
                 $("#tbl").find("tr:gt(0)").remove();
                 for (var i = 0; i < data.length; i++) {
-                    $("#tbl").append('<tr><td>' + data[i].SID + '</td><td>' + data[i].NAME + '</td><td>' + data[i].EMAIL + '</td><td>' + data[i].PASS + '</td><td>' + data[i].MOBILE +'</td></tr>')
+                    $("#tbl").append('<tr><td>' + data[i].SID + '</td><td>' + data[i].NAME + '</td><td>' + data[i].EMAIL + '</td><td>' + data[i].PASS + '</td><td>' + data[i].MOBILE + '</td> <td><input id="Delete_btn" value="Delete" type="button" onclick="DELETE(' + data[i].SID + ')" /></td> </tr>')
                 }
+            },
+            error: function () {
+                alert("Something went wrong!");
+            }
+        });
+    }
+
+    function DELETE(sid) {
+        $.ajax({
+            url: 'Student/StudentDelete',
+            type: 'post',
+            data: { sid },
+            success: function () {
+                alert("Deleted Successfully!");
+                SHOW();
             },
             error: function () {
                 alert("Something went wrong!");

@@ -45,5 +45,15 @@ namespace MVC_JQUERY_INSERT_DISPLAY_PRACTICE_01.Controllers
             string data = JsonConvert.SerializeObject(dt);
             return Json(data,JsonRequestBehavior.AllowGet);
         }
+
+        public void StudentDelete(int sid)
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("sp_StudentDelete", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@id", sid);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
     }
 }
